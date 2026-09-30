@@ -1,0 +1,223 @@
+openapi: 3.0.3
+info:
+  title: Dribble360 Football Data API
+  version: 0.1.0-draft
+  description: >
+    Best-effort draft spec for https://dribble360.com/api/v1.
+    Post-match Opta-sourced data on a daily refresh — not a live feed.
+    No odds dataset, no live-scores endpoint.
+    Fields marked x-unverified were inferred from row samples, not confirmed
+    against published schema docs; verify before relying on them.
+servers:
+  - url: https://dribble360.com/api/v1
+security:
+  - bearerAuth: []
+paths:
+  /players:
+    get:
+      summary: Player directory
+      x-unverified: true
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RowPage'
+  /teams:
+    get:
+      summary: Team directory
+      x-unverified: true
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RowPage'
+  /matches:
+    get:
+      summary: Match results
+      x-unverified: true
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Season'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/RowPage'
+                  - type: object
+                    x-unverified: true
+                    description: Row fields observed in practice (not schema-confirmed)
+                    properties:
+                      id: { type: string }
+                      date: { type: string, format: date-time }
+                      week: { type: integer }
+                      status: { type: string, enum: [PLAYED, FIXTURE] }
+                      description: { type: string, description: '"Home vs Away"' }
+                      home_score: { type: integer, nullable: true }
+                      away_score: { type: integer, nullable: true }
+                      season_id: { type: string }
+                      slug: { type: string }
+                      coverage_level: { type: integer }
+                      venue_id: { type: string }
+                      attendance: { type: integer, nullable: true }
+                      match_phase: { type: string }
+                      winner: { type: string, nullable: true }
+  /transfers:
+    get:
+      summary: Transfer records
+      x-unverified: true
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RowPage'
+  /managers:
+    get:
+      summary: Manager directory
+      x-unverified: true
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RowPage'
+  /referees:
+    get:
+      summary: Referee directory
+      x-unverified: true
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RowPage'
+  /player_matches:
+    get:
+      summary: Per-player per-match stats (season required)
+      parameters:
+        - $ref: '#/components/parameters/SeasonRequired'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/RowPage'
+                  - type: object
+                    x-unverified: true
+                    description: Selected row fields observed in practice
+                    properties:
+                      player_id: { type: string }
+                      match_id: { type: string }
+                      team_id: { type: string }
+                      opponent_team_id: { type: string }
+                      match_slug: { type: string }
+                      goals: { type: integer, nullable: true }
+                      goal_assist: { type: integer, nullable: true }
+                      expected_goals: { type: number, nullable: true }
+                      expected_assists: { type: number, nullable: true }
+                      mins_played: { type: integer, nullable: true }
+                      position: { type: string }
+  /team_matches:
+    get:
+      summary: Per-team per-match stats (season required)
+      parameters:
+        - $ref: '#/components/parameters/SeasonRequired'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Paginated rows
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/RowPage'
+                  - type: object
+                    x-unverified: true
+                    description: Selected row fields observed in practice
+                    properties:
+                      team_id: { type: string }
+                      match_id: { type: string }
+                      side: { type: string, enum: [HOME, AWAY] }
+                      goals: { type: integer }
+                      goals_conceded: { type: integer }
+                      expected_goals: { type: number, nullable: true }
+                      expected_goals_conceded: { type: number, nullable: true }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: drb_... key from dribble360.com/api-subscribers
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, default: 1000 }
+      description: Page size.
+    Offset:
+      name: offset
+      in: query
+      schema: { type: integer, default: 0 }
+      description: Rows to skip. A page shorter than `limit` is the last page.
+    Season:
+      name: season
+      in: query
+      schema: { type: string, example: "2025/2026" }
+      description: Season label. Observed in use; not schema-confirmed.
+      x-unverified: true
+    SeasonRequired:
+      name: season
+      in: query
+      required: true
+      schema: { type: string, example: "2025/2026" }
+      description: Season label, required for player_matches and team_matches.
+  schemas:
+    RowPage:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+  headers:
+    X-RateLimit-Limit:
+      description: Daily call allowance. Resets midnight UTC.
+      schema: { type: integer }
+      x-unverified: true
+    X-RateLimit-Remaining:
+      description: Calls remaining today.
+      schema: { type: integer }
+      x-unverified: true
