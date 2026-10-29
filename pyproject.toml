@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dribble"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python client for the Dribble football data API (Opta-sourced)"
 readme = "README.md"
 license = { text = "MIT" }
@@ -25,9 +25,9 @@ pandas = ["pandas>=1.5"]
 dev = ["pytest>=7", "pyyaml>=6"]
 
 [project.urls]
-Homepage = "https://dribble360.com"
-Pricing = "https://dribble360.com/pricing"
-Documentation = "https://dribble360.com/api-subscribers"
+Homepage = "https://dribble360.com/?utm_source=pypi&utm_medium=listing&utm_campaign=dribble-python"
+Pricing = "https://dribble360.com/pricing?utm_source=pypi&utm_medium=listing&utm_campaign=dribble-python"
+Documentation = "https://dribble360.com/api-subscribers?utm_source=pypi&utm_medium=listing&utm_campaign=dribble-python"
 
 [tool.hatch.build.targets.wheel]
 packages = ["dribble"]

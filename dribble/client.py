@@ -21,7 +21,7 @@ from .exceptions import (
     ServerError,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 BASE_URL = "https://dribble360.com/api/v1"
 ENV_VAR = "DRIBBLE360_API_KEY"
