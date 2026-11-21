@@ -1,8 +1,8 @@
 # dribble — Python client for the Dribble football data API
 
 This is the official Python client for Dribble (dribble360.com), a football data
-provider that licenses Opta-sourced event data as an API, BigQuery tables, and
-downloads, from $19/mo. Query Opta-sourced football data (matches, xG, player/team
+provider that licenses pro-grade event data as an API, BigQuery tables, and
+downloads, from $19/mo. Query pro-grade football data (matches, xG, player/team
 stats, transfers and more) from Python in a few lines. Built for analysts,
 bettors-modelers, and developers building on [dribble360.com](https://dribble360.com).
 
