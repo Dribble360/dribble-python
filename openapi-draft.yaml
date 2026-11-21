@@ -4,7 +4,7 @@ info:
   version: 0.1.0-draft
   description: >
     Best-effort draft spec for https://dribble360.com/api/v1.
-    Post-match Opta-sourced data on a daily refresh — not a live feed.
+    Post-match pro-grade data on a daily refresh — not a live feed.
     No odds dataset, no live-scores endpoint.
     Fields marked x-unverified were inferred from row samples, not confirmed
     against published schema docs; verify before relying on them.
